@@ -1,37 +1,64 @@
-# Delta Table Creation Process
+### This documentation outlines a Spark code snippet that involves transforming a DataFrame (df) obtained from a Delta table (recon_beta2.params_csv). The transformation includes cleaning up the JSON_PARAMS column by replacing double double-quotes with a single double-quote. The resulting DataFrame (result_df) is then collected, and specific information is extracted for each row.
 
-## This repository contains code for setting up a Delta table in the `recon_beta2` schema. The process involves creating and manipulating tables in a Databricks environment. Ensure that these steps are followed carefully, and note that the first step (`DROP TABLE recon_beta2.params_csv`) should only be executed if this process is performed one or more times before.
+## 1. Reading the Params
 
-## Steps
+```python
+df = spark.sql("select * from recon_beta2.params_csv where TARGET_TABLE IN ('delivery_item', 'delivery')")
 
-### 1. Drop Initial Table (Execute only once)
-```sql
-DROP TABLE recon_beta2.params_csv;
-```
-### 2. Create External Table (recon_beta2.params_csv1)
-#### Create an external table (recon_beta2.params_csv1) to read data from an external CSV file.
-
-```sql
-CREATE TABLE recon_beta2.params_csv1
-USING CSV
-OPTIONS (
-  'path' '/mnt/dbg2/dap_enterprise_scs_d/test/params.csv',
-  'delimiter' '|',       
-  'header' 'true',        
-  'inferSchema' 'true'
-);
+The above statemet executes a SQL query to select all columns from the Delta table <recon_beta2.params_csv/> where the TARGET_TABLE is either 'delivery_item' or 'delivery'. The TARGET_TABLE filter will vary from notebook to notebook.
 ```
 
-### 3. Create Delta Table (recon_beta2.params_csv)
-#### Create a Delta table (recon_beta2.params_csv) by selecting all data from the external table created in step 2.
+## 2. Column Transformation
+```python
+result_df = df.withColumn(
+    "JSON_PARAMS",
+    regexp_replace(col("JSON_PARAMS"), '""', '"')
+)
 
-```sql
-CREATE TABLE recon_beta2.params_csv AS SELECT * FROM recon_beta2.params_csv1;
+Cleans up the JSON_PARAMS column by replacing occurrences of double double-quotes with a single double-quote to make it a readable JSON.
 ```
+## 3. Data Collection
+```python
+collected_df = result_df.collect()
 
-### 4. Drop External Table (recon_beta2.params_csv1)
-#### Drop the external table (recon_beta2.params_csv1) as it is no longer needed.
+Collects the transformed DataFrame into a local Python list to be able tro iterate through the target tables.
+```
+## 4. Iteration and Data Processing
+```python
+The iteration before was on the basis of hard-coded target_table_list list in python, and explicit
+declaration of variables.
 
-```sql
-DROP TABLE recon_beta2.params_csv1;
+for each_target_table in target_table_list:
+    enterprise_table_fields=[]
+    enterprise_table_schema=''
+
+    if each_target_table == 'delivery':
+        pk_columns_list = "pk_columns_list_of_delivery_explicitly_declared"
+        final_table_target_schema = loaded_json["final_table_target_schema_of_delivery_explicitly_declared"]
+    elif each_target_table == 'delivery_item':
+        pk_columns_list = loaded_json["pk_columns_list__of_delivery_item_explicitly_declared"]
+        final_table_target_schema = loaded_json["final_table_target_schema_of_delivery_item_explicitly_declared"]
+
+It is replaced by one single loop to read the data and initiate the driver code as well.
+
+for row_params in collected_df:
+    enterprise_table_fields=[]
+    enterprise_table_schema=''
+    json_params = row_params['JSON_PARAMS']
+    json_params = json_params.strip('"')
+    each_target_table = row_params["TARGET_TABLE"]
+    loaded_json = json.loads(json_params)
+
+The if else tree is no more needed, present just for readability.
+
+    if each_target_table == 'delivery':
+        pk_columns_list = loaded_json["pk_columns_list"]
+        final_table_target_schema = loaded_json["final_table_target_schema"]
+    elif each_target_table == 'delivery_item':
+        pk_columns_list = loaded_json["pk_columns_list"]
+        final_table_target_schema = loaded_json["final_table_target_schema"]
+
+Iterates through each row in the collected DataFrame.
+Extracts information such as JSON_PARAMS, TARGET_TABLE, and loads the JSON content using json.loads.
+Processes data based on the value of TARGET_TABLE, extracting specific information like pk_columns_list and final_table_target_schema.
 ```
