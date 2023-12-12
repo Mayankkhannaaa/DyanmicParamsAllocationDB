@@ -1,0 +1,189 @@
+[
+  {
+    "pipeline_name": "bill_of_material",
+    "all": [
+      {
+        "target_table_name": "bill_of_material",
+        "schema": "bill_of_material_key BIGINT GENERATED ALWAYS AS Identity, src_site_cd string,src_site_name string,bill_of_material_number string,bill_of_material_category string,alternate_number string,bom_usage string,bom_status string,from_lot_size decimal(38,18),to_lot_size decimal(38,18),src_location string,src_location_name string,header_valid_from string,bom_alt_text string,deletion_flag string,change_number string,dap_batch_id string,dap_create_by string,dap_create_date timestamp,dap_update_by string,dap_update_date timestamp,dap_source_system string,bill_of_material_pkmd5_key string,bill_Of_material_fullmd5_key string",
+        "source_system_list": ["pge", "pr4", "pr1", "pr7"]
+      },
+      {
+        "target_table_name": "bill_of_material_transaction",
+        "source_system_list": ["pge", "pr4", "pr1", "pr7"],
+        "table_name": "Bill_of_Material_Transaction",
+        "fact_stream_name": "Bill_Of_Material_Transaction_view",
+        "pk_columns": [
+          "bill_of_material_number",
+          "bom_node_number",
+          "bill_of_material_category",
+          "dap_source_system_key",
+          "alternate_number",
+          "change_number"
+        ],
+        "final_table_target_schema": "bill_of_material_tx_key BIGINT GENERATED ALWAYS AS Identity,bill_of_material_key bigint,site_key integer,bill_of_material_number string,bill_of_material_category string,alternate_number string,target_material_key long,bill_of_material_item string,bom_node_number string,component_category_key long,target_material_base_qty decimal(38,18),target_material_uom string,counter string,change_number string,component_scrap decimal(38,18),inherited_bom_node string,item_del_ind string,sort_string string,bom_item_text1 string,bom_item_text2 string,config_mat_ind string,valid_from_date_key bigint,valid_to_date_key bigint,bom_valid_from_date_key bigint,input_material_key long,input_material_qty decimal(38,18),input_material_uom string,organizational_unit_key integer,production_line_key integer,machine_key integer,src_created_on_key integer,src_created_by string,src_changed_on_key integer,src_changed_by string, dap_batch_id string,dap_create_by string,dap_update_by string,dap_source_system_key int,Bill_of_Material_Transaction_pkmd5_key string,Bill_of_Material_Transaction_fullmd5_key string,dap_create_date timestamp,dap_update_date timestamp",
+        "final_fact_fields": [
+          "site_key",
+          "bill_of_material_key",
+          "bill_of_material_number",
+          "bom_node_number",
+          "bill_of_material_category",
+          "alternate_number",
+          "target_material_key",
+          "bill_of_material_item",
+          "component_category_key",
+          "target_material_base_qty",
+          "target_material_uom",
+          "counter",
+          "change_number",
+          "component_scrap",
+          "inherited_bom_node",
+          "item_del_ind",
+          "sort_string",
+          "bom_item_text1",
+          "bom_item_text2",
+          "config_mat_ind",
+          "valid_from_date_key",
+          "valid_to_date_key",
+          "bom_valid_from_date_key",
+          "input_material_key",
+          "input_material_qty",
+          "input_material_uom",
+          "organizational_unit_key",
+          "production_line_key",
+          "machine_key",
+          "src_created_on_key",
+          "src_created_by",
+          "src_changed_on_key",
+          "src_changed_by",
+          "dap_batch_id",
+          "dap_create_by",
+          "dap_create_date",
+          "dap_update_by",
+          "dap_update_date",
+          "dap_source_system_key",
+          "Bill_of_Material_Transaction_pkmd5_key",
+          "Bill_of_Material_Transaction_fullmd5_key",
+          "dap_update_date_ss",
+          "DAP_OPERATION"
+        ]
+      }
+    ]
+  },
+  {
+    "pipeline_name": "delivery",
+    "all": [
+      {
+        "target_table_name": "delivery_dim",
+        "source_system_list": [
+          "GPGE",
+          "EPR1_SARLND",
+          "EPR4_SIERRE",
+          "EPR7_GOT002"
+        ],
+        "target_tables": [
+          {
+            "target_table_name": "delivery",
+            "pk_columns_list": ["delivery_number", "dap_source_system"],
+            "final_table_target_schema": "delivery_key  BIGINT GENERATED ALWAYS AS IDENTITY, delivery_number string, delivery_priority string, std_sales_organization string, shipping_point string, shipping_point_desc string, export_indicator string, external_delivery_reference string, src_shipping_type_cd string, src_shipping_type string, incoterms_code string, incoterms_addition string, delivery_route string, src_document_category string, src_document_category_desc string, src_document_type string, src_document_type_desc string, src_processing_type_cd string, src_processing_type string, src_transport_type_cd string, src_transport_type string, transport_id string, src_means_of_transport_cd string, src_shipping_condition_cd string, src_shipping_condition string, std_interco_sales_organization string, src_interco_distribution_channel string, src_interco_division string, std_goods_movement_status_overall string, std_picking_status_overall string, std_packing_status_overall string, std_proof_of_delivery_status_overall string, std_billing_status_overall string, std_credit_status_overall string, bill_of_lading string, gr_gi_slip string, delivery_block string, created_by string, changed_by string, src_vendor_cd string, dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system string, delivery_pkmd5_key string, delivery_fullmd5_key string"
+          },
+          {
+            "target_table_name": "delivery_item",
+            "pk_columns_list": [
+              "delivery_number",
+              "delivery_item",
+              "dap_source_system"
+            ],
+            "final_table_target_schema": "delivery_item_key  BIGINT GENERATED ALWAYS AS IDENTITY, delivery_number string, delivery_item bigint, std_goods_movement_status string, std_picking_status string, std_packing_status string, std_proof_of_delivery_status string, src_material_number string, item_desc string, shipment_number string, src_material_group string, src_material_type string, customer_material string, customer_po string, customer_po_item string, std_billing_status string, parent_item bigint, pod_status string, originating_document string, originating_item string, reference_document_category string, reference_document string, reference_item string, src_batch_number string, std_special_stock_indicator string, src_document_category string, src_site_cd string, src_item_type string, src_freight_terms string, src_freight_group string, src_item_category string, src_movement_type string, src_division string, src_distribution_channel string, supplier_batch string,internal_delivery_schedule string,dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system string, delivery_item_pkmd5_key string, delivery_item_fullmd5_key string"
+          }
+        ]
+      },
+      {
+        "target_table_name": "delivery_fact",
+        "source_system_list": ["GPGE", "EPR1_SARLND", "EPR4_SIERRE", "EPR7_GOT002"],
+        "target_tables": [
+          {
+            "target_table_name": "delivery_transaction",
+            "pk_columns_list": null,
+            "final_table_target_schema": "delivery_tx_key BIGINT GENERATED ALWAYS AS IDENTITY, delivery_key bigint, delivery_item_key bigint, ship_to_customer_general_key bigint, sold_to_customer_general_key bigint, delivery_date_key bigint, loading_date_key bigint, picking_date_key bigint, planned_goods_movement_date_key bigint, actual_goods_movement_date_key bigint, transportation_planning_date_key bigint, billing_date_key bigint, proof_of_delivery_date_key bigint, std_delivery_direction string, material_key string, delivered_quantity decimal(38,18), unit_of_measure string, delivered_quantity_kg decimal(38,18), delivered_quantity_lb decimal(38,18), delivered_quantity_mt decimal(38,18), site_key bigint, storage_location string, gross_weight_kg decimal(38,18), net_weight_kg decimal(38,18), gross_weight_lb decimal(38,18), net_weight_lb decimal(38,18), gross_weight_mt decimal(38,18), net_weight_mt decimal(38,18), batch_info_key bigint, item_creation_date_key bigint, item_change_date_key bigint, interco_billing_customer_key string, sales_order_key bigint, sales_item_key bigint, purchase_order_key bigint, purchase_item_key bigint,delivered_quantity_sku decimal(38,18),sku_uom string,delivery_creation_date_key bigint,dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system_key int, delivery_transaction_pkmd5_key string, delivery_transaction_fullmd5_key string"
+          },
+          {
+            "target_table_name": "delivery_partner_bridge",
+            "pk_columns_list": [
+              "delivery_tx_key",
+              "customer_general_key",
+              "vendor_account_key",
+              "partner_type_key"
+            ],
+            "final_table_target_schema": "delivery_partner_key BIGINT GENERATED ALWAYS AS IDENTITY, delivery_tx_key bigint, customer_partner_key bigint, partner_type_key bigint, vendor_partner_key bigint, dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system_key int, delivery_partner_bridge_pkmd5_key string, delivery_partner_bridge_fullmd5_key string"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "pipeline_name": "production",
+    "all": [
+      {
+        "target_table_name": "production_dim",
+        "source_system_list":["GPGE","EPR1_SARLND","EPR4_SIERRE","EPR7_GOT002"],
+        "target_tables": [
+          {
+            "target_table_name": "planned_order",
+            "pk_columns_list": ["planned_order_number","dap_source_system"],
+            "final_table_target_schema": "planned_order_key BIGINT GENERATED BY DEFAULT AS IDENTITY, src_material_number string, planned_order_number string, src_planning_site_cd string, src_producing_site_cd string, order_type string, procurement_type string, mrp_controller string, src_material_group string, src_material_type string, sales_order_number string, sales_order_item string, reservation_number string, storage_location string, mrp_area string, production_supervisor string, production_version string, planned_order_conv_ind string, special_procurement_type string, special_stock_ind string, planned_order_firm string, dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system string, planned_order_pkmd5_key string, planned_order_fullmd5_key string, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "production_operation",
+            "pk_columns_list": ["operation_task_number","operation_task_counter","dap_source_system"],
+            "final_table_target_schema": "production_operation_key  BIGINT GENERATED BY DEFAULT AS IDENTITY, production_order_number string, operation_number string, operation_task_number string, operation_task_counter string, src_operation_type_cd string, src_control_key string, src_workcenter_id string, src_workcenter_cd string, src_operation_site_cd string, operation_short_text string, operation_confirmation_number string, dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system string, production_operation_pkmd5_key string, production_operation_fullmd5_key string, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "production_order",
+            "pk_columns_list": ["production_order_number","dap_source_system"],
+            "final_table_target_schema": "production_order_key BIGINT GENERATED BY DEFAULT AS IDENTITY,  production_order_number string, order_priority string, mrp_controller string, production_supervisor string, reservation_number string, mrp_area string, procurement_type string, order_type string, order_category string, src_producing_site_cd string, std_producing_site_cd string, src_material_group string, src_material_type string, delivery_complete_ind string, stock_type string, sales_order_number string, sales_order_item string, storage_location string, src_material_number string, planned_order_number string, special_procurement_type string, src_planning_site_cd string, std_planning_site_cd string, special_stock_ind string, production_version string, created_on timestamp, changed_on timestamp, bill_of_material int, alternative_bom string, routing_number int, tasklist_uom string, dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system string, production_order_pkmd5_key string, production_order_fullmd5_key string, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "production_order_item",
+            "pk_columns_list": ["production_order_number","production_order_item","dap_source_system"],
+            "final_table_target_schema": "production_order_item_key BIGINT GENERATED BY DEFAULT AS IDENTITY, production_order_number string, production_order_item string, order_priority string, mrp_controller string, production_supervisor string, reservation_number string, mrp_area string, procurement_type string, batch_number string, order_type string, order_category string, src_producing_site_cd string, std_producing_site_cd string, src_material_group string, src_material_type string, delivery_complete_ind string, stock_type string, sales_order_number string, sales_order_item string, storage_location string, src_material_number string, planned_order_number string, special_procurement_type string, src_planning_site_cd string, std_planning_site_cd string, special_stock_ind string, production_version string, created_on timestamp, changed_on timestamp, bill_of_material int, alternative_bom string, routing_number int, tasklist_uom string, dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system string, production_order_item_pkmd5_key string, production_order_item_fullmd5_key string, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "reservation",
+            "pk_columns_list": ["reservation_number","reservation_item","record_type","dap_source_system"],
+            "final_table_target_schema": "reservation_key BIGINT GENERATED BY DEFAULT AS IDENTITY, src_material_number string, src_site_cd string, planned_order_number string, batch_number string, reservation_number string, reservation_item string, src_material_group string,src_material_type string, requirement_type string, item_category string, storage_location string, production_order_number string,production_order_item string,special_stock_ind string, record_type string, src_movement_type string, deletion_ind string, final_issue_ind string, goods_movement_ind string, dap_batch_id string NOT NULL, dap_create_by string NOT NULL, dap_create_date timestamp, dap_update_by string NOT NULL, dap_update_date timestamp, dap_source_system string NOT NULL, reservation_pkmd5_key string NOT NULL, reservation_fullmd5_key string NOT NULL, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          }
+        ]
+      },
+      {
+        "target_table_name": "production_fact",
+        "source_system_list":  ["GPGE","EPR1_SARLND","EPR4_SIERRE","EPR7_GOT002"],
+        "target_tables": [
+          {
+            "target_table_name": "planned_order_transaction",
+            "null_columns_list":["planned_quantity", "planned_quantity_open", "planned_quantity_kg", "planned_quantity_lb", "planned_quantity_mt", "planned_quantity_reduced_kg", "planned_quantity_reduced_lb", "planned_quantity_reduced_mt", "planned_quantity_open_kg", "planned_quantity_open_lb", "planned_quantity_open_mt", "planned_quantity_reduced", "planned_quantity_fixed"],
+            "pk_columns_list": null,
+            "final_table_target_schema": "planned_order_tx_key BIGINT GENERATED BY DEFAULT AS IDENTITY, planned_order_key bigint, material_key bigint, std_planning_site_key bigint, std_producing_site_key bigint, planned_finish_date_key bigint, planned_start_date_key bigint, planned_opening_date_key bigint, planned_quantity decimal(38,18), unit_of_measure string, planned_quantity_reduced decimal(38,18), planned_quantity_fixed decimal(38,18), planned_quantity_open decimal(38,18), planned_quantity_kg decimal(38,18), planned_quantity_lb decimal(38,18), planned_quantity_mt decimal(38,18), planned_quantity_reduced_kg decimal(38,18), planned_quantity_reduced_lb decimal(38,18), planned_quantity_reduced_mt decimal(38,18), planned_quantity_open_kg decimal(38,18), planned_quantity_open_lb decimal(38,18), planned_quantity_open_mt decimal(38,18), dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system_key int, planned_order_transaction_pkmd5_key string, planned_order_transaction_fullmd5_key string, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "production_order_transaction",
+            "pk_columns_list": null,
+            "null_columns_list":["quantity_scrap", "quantity_ordered", "quantity_goods_received", "overdelivery_tolerance", "underdelivery_tolerance", "quantity_goods_received_kg", "quantity_goods_received_lb", "quantity_goods_received_mt", "quantity_ordered_kg", "quantity_ordered_lb", "quantity_ordered_mt", "quantity_ordered_open", "quantity_ordered_open_kg", "quantity_ordered_open_lb", "quantity_ordered_open_mt", "quantity_scrap_kg", "quantity_scrap_lb", "quantity_scrap_mt", "start_date_actual"],
+            "final_table_target_schema": "production_order_tx_key  BIGINT GENERATED BY DEFAULT AS IDENTITY, production_order_key bigint, production_order_item_key bigint, producing_site_key bigint, material_key bigint, batch_info_key bigint, quantity_scrap decimal(38,18), quantity_ordered decimal(38,18), quantity_goods_received decimal(38,18), quantity_ordered_open decimal(38,18), unit_of_measure string, quantity_scrap_kg decimal(38,18), quantity_ordered_kg decimal(38,18), quantity_goods_received_kg decimal(38,18), quantity_ordered_open_kg decimal(38,18), quantity_scrap_lb decimal(38,18), quantity_ordered_lb decimal(38,18), quantity_goods_received_lb decimal(38,18), quantity_ordered_open_lb decimal(38,18), quantity_scrap_mt decimal(38,18), quantity_ordered_mt decimal(38,18), quantity_goods_received_mt decimal(38,18), quantity_ordered_open_mt decimal(38,18), production_order_status string, unlimited_overdelivery_ind string, overdelivery_tolerance decimal(38,18), underdelivery_tolerance decimal(38,18), planning_site_key bigint, release_date_actual_key bigint, release_date_scheduled_key bigint, finish_date_confirmed_key bigint, finish_time_confirmed string, finish_date_actual_key bigint, finish_date_basic_key bigint, finish_date_scheduled_key bigint, finish_time_basic string, finish_time_scheduled string, start_date_actual bigint, start_date_basic_key bigint, start_date_scheduled_key bigint, start_time_actual string, start_time_basic string, start_time_scheduled string, sales_order_key bigint, sales_item_key bigint, base_uom string, base_qty decimal(38, 18), base_qty_kg decimal(38,18), base_qty_lb decimal(38,18), base_qty_mt decimal(38,18), dap_batch_id string, dap_create_by string, dap_create_date timestamp, dap_update_by string, dap_update_date timestamp, dap_source_system_key int, production_order_transaction_pkmd5_key string, production_order_transaction_fullmd5_key string, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "production_operation_transaction",
+            "null_columns_list": null,
+            "pk_columns_list":["production_order_key", "production_operation_key", "operation_number", "machine_key", "site_key"],
+            "final_table_target_schema": "production_operation_tx_key BIGINT GENERATED BY DEFAULT AS IDENTITY, production_order_key bigint, production_operation_key bigint, operation_number string, machine_key bigint, site_key bigint, dap_batch_id string NOT NULL, dap_create_by string NOT NULL, dap_create_date timestamp NOT NULL, dap_update_by string NOT NULL, dap_update_date timestamp NOT NULL, dap_source_system_key int NOT NULL, production_operation_transaction_pkmd5_key string, production_operation_transaction_fullmd5_key string NOT NULL, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          },
+          {
+            "target_table_name": "reservation_transaction",
+            "pk_columns_list": null,
+            "null_columns_list":["reservation_quantity", "quantity_withdrawn", "reservation_quantity_entry", "open_reservation_quantity", "reservation_quantity_kg", "reservation_quantity_lb", "reservation_quantity_mt", "quantity_withdrawn_kg", "quantity_withdrawn_lb", "quantity_withdrawn_mt", "open_reservation_quantity_kg", "open_reservation_quantity_lb", "open_reservation_quantity_mt"],
+            "final_table_target_schema": "reservation_tx_key BIGINT GENERATED BY DEFAULT AS IDENTITY, reservation_key bigint, material_key bigint, site_key bigint, batch_key bigint, planned_order_key bigint, production_order_key bigint, reservation_quantity decimal(38,18),quantity_withdrawn decimal(38,18),open_reservation_quantity decimal(38,18),unit_of_measure string,reservation_quantity_kg decimal(38,18),reservation_quantity_lb decimal(38,18),reservation_quantity_mt decimal(38,18),quantity_withdrawn_kg decimal(38,18),quantity_withdrawn_lb decimal(38,18),quantity_withdrawn_mt decimal(38,18),open_reservation_quantity_kg decimal(38,18),open_reservation_quantity_lb decimal(38,18),open_reservation_quantity_mt decimal(38,18),reservation_quantity_entry decimal(38,18),entry_unit_of_measure string,requirement_date_key bigint, reservation_status string, debit_credit_ind string,dap_batch_id string NOT NULL, dap_create_by string NOT NULL, dap_create_date timestamp NOT NULL, dap_update_by string NOT NULL, dap_update_date timestamp NOT NULL, dap_source_system_key int NOT NULL, reservation_transaction_pkmd5_key string NOT NULL, reservation_transaction_fullmd5_key string NOT NULL, dap_readStream_date timestamp, dap_update_date_ss timestamp"
+          }
+        ]
+      }
+    ]
+  }
+]
