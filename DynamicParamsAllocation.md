@@ -1,11 +1,11 @@
-### This documentation outlines a Spark code snippet that involves transforming a DataFrame (df) obtained from a Delta table (recon_beta2.params_csv). The transformation includes cleaning up the JSON_PARAMS column by replacing double double-quotes with a single double-quote. The resulting DataFrame (result_df) is then collected, and specific information is extracted for each row.
+### This documentation outlines a Spark code snippet that involves transforming a DataFrame (df) obtained from a Delta table (schema_name.params_csv). The transformation includes cleaning up the JSON_PARAMS column by replacing double double-quotes with a single double-quote. The resulting DataFrame (result_df) is then collected, and specific information is extracted for each row.
 
 ## 1. Reading the Params
 
 ```python
-df = spark.sql("select * from recon_beta2.params_csv where TARGET_TABLE IN ('delivery_item', 'delivery')")
+df = spark.sql("select * from schema_name.params_csv where TARGET_TABLE IN ('target_table_name1', 'target_table_name2')")
 ```
-The above statemet executes a SQL query to select all columns from the Delta table <recon_beta2.params_csv/> where the TARGET_TABLE is either 'delivery_item' or 'delivery'. The TARGET_TABLE filter will vary from notebook to notebook.
+The above statemet executes a SQL query to select all columns from the Delta table <schema_name.params_csv/> where the TARGET_TABLE is either 'target_table_name1' or 'target_table_name2'. The TARGET_TABLE filter will vary from notebook to notebook.
 
 
 ## 2. Column Transformation
@@ -32,12 +32,12 @@ for each_target_table in target_table_list:
     enterprise_table_fields=[]
     enterprise_table_schema=''
 
-    if each_target_table == 'delivery':
-        pk_columns_list = "pk_columns_list_of_delivery_explicitly_declared"
-        final_table_target_schema = loaded_json["final_table_target_schema_of_delivery_explicitly_declared"]
-    elif each_target_table == 'delivery_item':
-        pk_columns_list = loaded_json["pk_columns_list__of_delivery_item_explicitly_declared"]
-        final_table_target_schema = loaded_json["final_table_target_schema_of_delivery_item_explicitly_declared"]
+    if each_target_table == 'target_table_name2':
+        pk_columns_list = "pk_columns_list_of_target_table_name2_explicitly_declared"
+        final_table_target_schema = loaded_json["final_table_target_schema_of_target_table_name2_explicitly_declared"]
+    elif each_target_table == 'target_table_name1':
+        pk_columns_list = loaded_json["pk_columns_list__of_target_table_name1_explicitly_declared"]
+        final_table_target_schema = loaded_json["final_table_target_schema_of_target_table_name1_explicitly_declared"]
 ```
 
 It is replaced by one single loop to read the data and initiate the driver code as well.
@@ -52,10 +52,10 @@ for row_params in collected_df:
 ```
 The if else tree is no more needed, present just for readability.
 ```python
-    if each_target_table == 'delivery':
+    if each_target_table == 'target_table_name2':
         pk_columns_list = loaded_json["pk_columns_list"]
         final_table_target_schema = loaded_json["final_table_target_schema"]
-    elif each_target_table == 'delivery_item':
+    elif each_target_table == 'target_table_name1':
         pk_columns_list = loaded_json["pk_columns_list"]
         final_table_target_schema = loaded_json["final_table_target_schema"]
 ```
