@@ -4,9 +4,9 @@
 
 ```python
 df = spark.sql("select * from recon_beta2.params_csv where TARGET_TABLE IN ('delivery_item', 'delivery')")
-
-The above statemet executes a SQL query to select all columns from the Delta table <recon_beta2.params_csv/> where the TARGET_TABLE is either 'delivery_item' or 'delivery'. The TARGET_TABLE filter will vary from notebook to notebook.
 ```
+The above statemet executes a SQL query to select all columns from the Delta table <recon_beta2.params_csv/> where the TARGET_TABLE is either 'delivery_item' or 'delivery'. The TARGET_TABLE filter will vary from notebook to notebook.
+
 
 ## 2. Column Transformation
 ```python
@@ -14,20 +14,20 @@ result_df = df.withColumn(
     "JSON_PARAMS",
     regexp_replace(col("JSON_PARAMS"), '""', '"')
 )
+```
 
 Cleans up the JSON_PARAMS column by replacing occurrences of double double-quotes with a single double-quote to make it a readable JSON.
-```
+
 ## 3. Data Collection
 ```python
 collected_df = result_df.collect()
-
-Collects the transformed DataFrame into a local Python list to be able tro iterate through the target tables.
 ```
+Collects the transformed DataFrame into a local Python list to be able tro iterate through the target tables.
+
 ## 4. Iteration and Data Processing
-```python
 The iteration before was on the basis of hard-coded target_table_list list in python, and explicit
 declaration of variables.
-
+```python
 for each_target_table in target_table_list:
     enterprise_table_fields=[]
     enterprise_table_schema=''
@@ -38,9 +38,10 @@ for each_target_table in target_table_list:
     elif each_target_table == 'delivery_item':
         pk_columns_list = loaded_json["pk_columns_list__of_delivery_item_explicitly_declared"]
         final_table_target_schema = loaded_json["final_table_target_schema_of_delivery_item_explicitly_declared"]
+```
 
 It is replaced by one single loop to read the data and initiate the driver code as well.
-
+```python
 for row_params in collected_df:
     enterprise_table_fields=[]
     enterprise_table_schema=''
@@ -48,16 +49,16 @@ for row_params in collected_df:
     json_params = json_params.strip('"')
     each_target_table = row_params["TARGET_TABLE"]
     loaded_json = json.loads(json_params)
-
+```
 The if else tree is no more needed, present just for readability.
-
+```python
     if each_target_table == 'delivery':
         pk_columns_list = loaded_json["pk_columns_list"]
         final_table_target_schema = loaded_json["final_table_target_schema"]
     elif each_target_table == 'delivery_item':
         pk_columns_list = loaded_json["pk_columns_list"]
         final_table_target_schema = loaded_json["final_table_target_schema"]
-
+```
 Iterates through each row in the collected DataFrame.
 Extracts information such as JSON_PARAMS, TARGET_TABLE, and loads the JSON content using json.loads.
 Processes data based on the value of TARGET_TABLE, extracting specific information like pk_columns_list and final_table_target_schema.

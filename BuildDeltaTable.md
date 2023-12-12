@@ -35,3 +35,5 @@ CREATE TABLE recon_beta2.params_csv AS SELECT * FROM recon_beta2.params_csv1;
 ```sql
 DROP TABLE recon_beta2.params_csv1;
 ```
+
+Refer to the documentaiton [Access Data In DB Notebook](DynamicParamsAllocation.md) for further steps.
