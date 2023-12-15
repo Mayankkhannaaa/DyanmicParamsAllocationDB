@@ -1,2 +1,2 @@
-param.json
-params.csv
+*.json
+*.csv
